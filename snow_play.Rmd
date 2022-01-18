@@ -53,8 +53,10 @@ black_bear_plot
 ```{r}
 jan_01_2021 <- swe_summary_wy2021_df %>% 
   filter(date == "2021-01-01") %>% 
-  filter(state == "CO") %>% 
-  drop_na(pct_of_median_longterm_swe)
+  drop_na(pct_of_median_longterm_swe) %>% 
+  filter(pct_of_median_longterm_swe > 0)
+
+write_csv(jan_01_2021, file.path(here("combined_data", "jan_01_2021.csv")))
 ```
 
 ```{r}
