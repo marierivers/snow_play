@@ -1,0 +1,66 @@
+---
+title: "snow_play"
+author: "Marie Rivers"
+date: "1/17/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+library(lubridate)
+```
+
+```{r}
+swe_summary_files <- list.files(path = here("data", "WY2021", "SWESummary"), pattern = ".txt")
+```
+
+```{r}
+test_file <- here("data", "WY2021", "SWESummary", "SnowToday_USwest_20201001_SWEsummary.txt")
+test_sweSummary <- read.csv(test_file, header = TRUE, sep = ",")
+```
+
+```{r}
+source(here("src", "read_swe_summary.R"))
+swe_summary_wy2021_df = data.frame()
+
+for (i in seq_along(swe_summary_files)) {
+  daily_data <- read_swe_summary(files = swe_summary_files[i])
+  daily_data_df <- data.frame(daily_data)
+  swe_summary_wy2021_df <- rbind(swe_summary_wy2021_df, daily_data_df)
+}
+```
+
+```{r}
+write_csv(swe_summary_wy2021_df, file.path(here("combined_data", "swe_summary_wy2021.csv")))
+```
+
+```{r}
+black_bear <- swe_summary_wy2021_df %>% 
+  filter(site_name == "Black Bear")
+```
+
+
+```{r}
+black_bear_plot <- ggplot(data = black_bear, aes(x = date, y = pct_of_median_longterm_swe)) +
+  geom_point(aes(color = state))
+black_bear_plot
+```
+```{r}
+jan_01_2021 <- swe_summary_wy2021_df %>% 
+  filter(date == "2021-01-01") %>% 
+  filter(state == "CO") %>% 
+  drop_na(pct_of_median_longterm_swe)
+```
+
+```{r}
+jan_01_plot <- ggplot(data = jan_01_2021, aes(y = site_name, x = pct_of_median_longterm_swe)) +
+  geom_bar(stat = "identity", aes(fill = state))
+jan_01_plot
+```
+
+
