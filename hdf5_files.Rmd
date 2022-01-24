@@ -1,0 +1,31 @@
+---
+title: "hdf5_files"
+author: "Marie Rivers"
+date: "1/23/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("rhdf5")
+```
+
+```{r}
+filepath <- "data/SPIRES/Sierra/"
+```
+
+```{r}
+h5readAttributes(file = "data/SPIRES/Sierra/Sierra2019.h5",
+                 name = "Grid/MODIS_GRID_500m/snow_fraction")
+```
+```{r}
+test_subset <- h5read(file = "data/SPIRES/Sierra/Sierra2019.h5",
+                      name = "Grid/MODIS_GRID_500m/snow_fraction")
+```
+
+```{r}
+hist(test_subset)
+```
